@@ -14,7 +14,7 @@ public:
     }
 
     ResourceManager(const ResourceManager&) = delete;
-    Resource& operator=(const Resource&) = delete;
+    ResourceManager& operator=(const ResourceManager&) = delete;
 
     double get()
     {
