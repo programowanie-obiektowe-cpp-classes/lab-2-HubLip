@@ -5,7 +5,7 @@
 class ResourceManager
 {
 private:
-    Resource* resource;
+    Resource* resource; //Wskaznik typu Resource o nazwie resource.
 public:
 
     ResourceManager()
@@ -22,6 +22,6 @@ public:
     }
 
     ~ResourceManager() {
-        delete resource;
+        delete resource; //Usuwanie obiektu Resource
     }
 };
