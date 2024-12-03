@@ -2,43 +2,62 @@
 
 #include "Resource.hpp"
 
-class ResourceManager
-{
+class ResourceManager {
 private:
-    Resource *resource; //Wskaznik typu Resource o nazwie resource.
+    Resource* resource; // Wskaźnik do zarządzanego obiektu Resource
+
 public:
+    // Konstruktor domyślny
+    ResourceManager() : resource(new Resource()) {}
 
-    ResourceManager()
-    {
-        resource = new Resource(); // ResourceManager tworzy obiekt Resource
-    }
+    // Konstruktor kopiujący
+    ResourceManager(const ResourceManager& res) 
+        : resource(new Resource(*res.resource)) {} // Tworzymy nowy obiekt Resource jako kopię
 
-    //Poprawne kopiowanie czyli przy kopiowaniu ResourceManager, nowy obiekt ma miec swoja wlasna kopie obiektu Resource
-    ResourceManager(const ResourceManager& res)
-    {
-        resource = new Resource(*res.resource); //uzywamy *res poniewaz chcemy skopiowac sam obiekt a nie adres na jaki wskaznik wskazuje
-    }
-
-    ResourceManager& operator=(const ResourceManager& res)
-    {
-        if (this == &res) //&res zwraca adres res, samo res jest referencja do obiektu typu ResourceManager zatem aby odniesc sie do adresu trzeba uzyc &res (& to operator adresu).
-        {
+    // Operator przypisania kopiujący
+    ResourceManager& operator=(const ResourceManager& res) {
+        if (this == &res) { // Zabezpieczenie przed samoprzydziałem
             return *this;
         }
 
+        // Usuwamy aktualny zasób
         delete resource;
 
+        // Tworzymy nową kopię zasobu
         resource = new Resource(*res.resource);
 
         return *this;
     }
 
-    double get()
-    {
-        return resource -> get();
+    // Konstruktor przenoszący
+    ResourceManager(ResourceManager&& res) noexcept 
+        : resource(res.resource) { // Przenosimy wskaźnik
+        res.resource = nullptr;   // Ustawiamy wskaźnik źródła na nullptr
     }
 
+    // Operator przypisania przenoszący
+    ResourceManager& operator=(ResourceManager&& res) noexcept {
+        if (this == &res) { // Zabezpieczenie przed samoprzydziałem
+            return *this;
+        }
+
+        // Usuwamy aktualny zasób
+        delete resource;
+
+        // Przenosimy wskaźnik
+        resource = res.resource;
+        res.resource = nullptr; // Ustawiamy wskaźnik źródła na nullptr
+
+        return *this;
+    }
+
+    // Metoda get, która deleguje wywołanie do zarządzanego obiektu Resource
+    double get() {
+        return resource->get();
+    }
+
+    // Destruktor
     ~ResourceManager() {
-        delete resource; //Usuwanie obiektu Resource
+        delete resource; // Zwolnienie zarządzanego zasobu
     }
 };
